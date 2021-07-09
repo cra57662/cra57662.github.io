@@ -1,0 +1,82 @@
+<! DOCTYPE html >
+	< html >
+	  < cabeza >
+	    < meta  charset = " utf-8 " >
+	    < meta  name = " viewport " content = " width = device-width, initial-scale = 1 " >
+	    < título > Autenticación </ título >
+	    < link  rel = " stylesheet " href = " estilos.css " >
+	
+
+	   <! - Carga el núcleo de Firebase JS SDK ->
+	    < script  src = " https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js " > </ script >
+	    <! - Agrega el manejo de autenticación. ->
+	    < script  src = " https://www.gstatic.com/firebasejs/8.3.1/firebase-auth.js " >
+	    </ script >
+	    < script  src = " js / init.js " > </ script >
+	  </ cabeza >
+	  < cuerpo >
+	    < h1 > Autenticación </ h1 >
+	    < h1 > Sesión </ h1 >
+	    <conjunto de campos >
+	      < leyenda > Correo electrónico </ leyenda >
+	      < output  id = " email " > < progress  max = " 100 " > Cargando… </ progress > </ output >
+	    </ fieldset >
+	    <conjunto de campos >
+	      < leyenda > Nombre </ leyenda >
+	      < output  id = " nombre " > </ output >
+	    </ fieldset >
+	    < figura > < img  id = " avatar " alt = " Avatar " > </ figura >
+	    < button  type = " button " onclick = " terminaSesión () " > Terminar Sesión </ button >
+	    < pie de página > Copyright & copy; 2021 Cruz Herrera Jose Antonio. </ pie de página >
+	    < guión >
+	      // @ts -check
+	      / ** Conexión al sistema de autenticación de Firebase. * /
+	      // @ts -ignore
+	      const  auth  = base de  fuego . auth ( ) ;
+	      / ** Tipo de autenticación de usuarios. En este caso es con Google. * /
+	      // @ts -ignore
+	       proveedor  constante =  nueva base de  fuego . auth . GoogleAuthProvider ( ) ;
+	      / * Configura el proveedor de Google para que permita seleccionar una
+	       * lista. * /
+	      proveedor . setCustomParameters ( {  prompt : "select_account"  } ) ;
+	      / * Recibe una función que se invoca cada que hay un cambio en la
+	       * autenticación y recibe el modelo con las características del usuario. * /
+	      auth . onAuthStateChanged (
+	        / ** Recibe las características del usuario o null si no ha iniciado
+	         * sesión. * /
+	        usuarioAuth  =>  {
+	          if  ( usuarioAuth  &&  usuarioAuth . email )  {
+	            // Usuario aceptado.
+	            // @ts -ignore Muestra el email registrado en Google.
+	            enviar por correo electrónico . valor  =  usuarioAuth . correo electrónico ;
+	            // @ts -ignore Muestra el nombre registrado en Google.
+	            nombre . valor  =  usuarioAuth . displayName ;
+	            // @ts -ignore Muestra el avatar registrado en Google.
+	            avatar . src  =  usuarioAuth . photoURL ;
+	          }  más  {
+	            // No ha iniciado sesión. Pide datos para iniciar sesión.
+	            auth . signInWithRedirect ( proveedor ) ;
+	          }
+	        } ,
+	        // Función que se invoca si hay un error al verificar el usuario.
+	        procesaError
+	      ) ;
+	      / ** Termina la sesión. * /
+	       función  asíncrona terminaSesión ( )  {
+	        prueba  {
+	          aguardar  auth . signOut ( ) ;
+	        }  captura  ( e )  {
+	          procesaError ( e ) ;
+	        }
+	      }
+	      / ** Procesa un error. Muestra el objeto en la consola y un cuadro de
+	       * alerta con el mensaje.
+	       * @param { Error } e descripción del error. * /
+	      function  procesaError ( e )  {
+	        consola . log ( e ) ;
+	        alerta ( e . mensaje ) ;
+	      }
+	    </ script >
+	  </ cuerpo >
+	</ html >
+
